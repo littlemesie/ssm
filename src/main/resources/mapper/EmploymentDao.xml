@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mesie.dao.IEmploymentDao">
+    <resultMap id="BaseResultMap" type="cn.mesie.model.Employment">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="valid" column="valid" jdbcType="INTEGER"/>
+        <result property="signdate" column="signdate" jdbcType="VARCHAR"/>
+        <association property="company" javaType="cn.mesie.model.Company">
+            <result property="id" column="comid" jdbcType="INTEGER"/>
+            <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="student" javaType="cn.mesie.model.Student">
+            <result property="stuid" column="stuid" jdbcType="INTEGER"/>
+            <result property="stuname" column="stuname" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <insert id="addEmployment" parameterType="Employment">
+        INSERT INTO employment(comid,stuid,signdate,valid)
+        VALUES (#{comid},#{stuid},#{signdate},1)
+    </insert>
+    <select id="selectAllEmployment" resultMap="BaseResultMap">
+        SELECT
+        a.id as id,
+        a.valid as valid,
+        a.signdate as signdate,
+        b.company_name as company_name,
+        b.id as comid
+        FROM  employment a
+        LEFT JOIN company b
+        ON a.comid = b.id
+
+    </select>
+
+    <select id="selectEmploymentById" resultMap="BaseResultMap">
+        SELECT
+        a.id as id,
+        a.starttime as starttime,
+        a.endtime as endtime,
+        a.state as state,
+        a.position as position,
+        a.jobintro as jobintro,
+        a.jobcontent as jobcontent,
+        a.outcome as outcome,
+        a.instructor as instructor,
+        a.instructorphone as instructorphone,
+        b.company_name as company_name,
+        b.id as comid
+        FROM  internship a
+        LEFT JOIN company b
+        ON a.comid = b.id WHERE a.id = #{id}
+    </select>
+
+    <select id="selectLastEmpByStuid" resultType="Integer" parameterType="Integer">
+        SELECT id FROM employment WHERE stuid=#{stuid} ORDER BY id DESC LIMIT 1
+    </select>
+
+    <update id="updateValid" parameterType="Integer">
+        UPDATE employment SET valid=2 WHERE id=#{id}
+    </update>
+
+
+</mapper>

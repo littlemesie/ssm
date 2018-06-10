@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.mesie.dao.IResumeDao">
+
+    <resultMap id="BaseResultMap" type="cn.mesie.model.Resume">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="stuid" property="stuid" jdbcType="INTEGER"/>
+        <result column="filename" property="filename" jdbcType="VARCHAR"/>
+        <result column="filepath" property="filepath" jdbcType="VARCHAR"/>
+        <result column="onlinecv" property="onlinecv" jdbcType="VARCHAR"/>
+        <result column="comment" property="comment" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <select id="selectAllRes" resultMap="BaseResultMap" parameterType="Integer">
+        SELECT * FROM resume WHERE stuid=#{stuid}
+    </select>
+
+    <select id="selectOneRes" resultType="Resume" parameterType="Integer">
+        SELECT * FROM resume WHERE id=#{id}
+    </select>
+
+    <update id="modifyRes" parameterType="String">
+        UPDATE resume SET filename=#{filename},onlinecv=#{onlinecv},comment=#{comment} WHERE id=#{id}
+    </update>
+
+    <delete id="deleteRes" parameterType="Integer">
+        DELETE FROM resume WHERE id=#{id}
+    </delete>
+
+    <insert id="addRes" parameterType="Resume">
+        INSERT INTO resume (stuid,filename,onlinecv,comment,type) VALUES (#{stuid},#{filename},#{onlinecv},#{comment},#{type})
+    </insert>
+
+</mapper>

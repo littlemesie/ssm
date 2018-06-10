@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.mesie.dao.IStuDao">
+
+    <resultMap id="BaseResultMap" type="cn.mesie.model.Teacher">
+        <id column="teaid" property="teaid" jdbcType="INTEGER"/>
+        <result column="teaname" property="teaname" jdbcType="VARCHAR"/>
+        <result column="instituid" property="instituid" jdbcType="INTEGER"/>
+        <result column="departmentid" property="departmentid" jdbcType="INTEGER"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="mobilephone" property="mobilephone" jdbcType="VARCHAR"/>
+        <result column="qq" property="qq" jdbcType="VARCHAR"/>
+        <result column="wechat" property="wechat" jdbcType="VARCHAR"/>
+        <association property="institution" javaType="cn.mesie.model.Institution">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="in_name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="department" javaType="cn.mesie.model.Department">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="de_name" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <select id="selectStu" resultType="Student" parameterType="String">
+        SELECT * FROM student WHERE stuid = #{stuid} AND password = #{password}
+    </select>
+
+    <select id="selectStuinfo" resultType="Student" parameterType="Integer">
+        SELECT * FROM student WHERE stuid = #{stuid}
+    </select>
+
+    <select id="selectTeaname" resultType="String" parameterType="Integer">
+        SELECT teaname FROM teacher WHERE teaid = #{teaid}
+    </select>
+
+    <update id="modifyPapeState" parameterType="Integer">
+        UPDATE student SET paperadvisor=1 WHERE stuid = #{stuid}
+    </update>
+
+    <update id="modifyAdviState" parameterType="Integer">
+        UPDATE student SET advisestate=1 WHERE stuid = #{stuid}
+    </update>
+
+    <update id="modifyStuinfo" parameterType="String">
+        UPDATE student SET email=#{email},mobilephone=#{mobilephone},qq=#{qq},wechat=#{wechat} WHERE stuid = #{stuid}
+    </update>
+
+    <update id="modifyPwd" parameterType="String">
+        UPDATE student SET password=#{newpwd} WHERE stuid = #{stuid}
+    </update>
+
+
+    <update id="updateSelfInfo" parameterType="String">
+        UPDATE student SET selfintro=#{selfintro},selfintroplain=#{selfintroplain} WHERE stuid = #{stuid}
+    </update>
+
+    <select id="selectAllTeacher" resultMap="BaseResultMap">
+        SELECT
+            a.teaid as teaid,
+            a.teaname as teaname,
+            a.email as email,
+            a.mobilephone as mobilephone,
+            a.qq as qq,
+            a.wechat as wechat,
+            b.name as in_name,
+            c.name as de_name
+        FROM teacher a
+        JOIN institution as b on a.instituid=b.id
+        JOIN department as c ON a.departmentid =c.id
+    </select>
+
+    <update id="updateState" parameterType="Integer">
+        UPDATE student SET state = #{state} WHERE stuid = #{stuid}
+    </update>
+
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="cn.mesie.dao.IJopDao">
+
+    <resultMap id="BaseResultMap" type="cn.mesie.model.Jobapply">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="stuid" property="stuid" jdbcType="INTEGER"/>
+        <result column="recruitid" property="recruitid" jdbcType="INTEGER"/>
+        <result column="comid" property="comid" jdbcType="INTEGER"/>
+        <result column="resumeid" property="resumeid" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <association property="company" javaType="cn.mesie.model.Company">
+            <result property="id" column="company_id" jdbcType="INTEGER"/>
+            <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="recruit" javaType="cn.mesie.model.Recruit">
+            <result property="id" column="recruit_id" jdbcType="INTEGER"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <select id="selectAllJop" resultMap="BaseResultMap">
+        SELECT
+            a.id AS id,
+            a.stuid AS stuid,
+            a.recruitid AS recruitid,
+            a.comid AS comid,
+            a.resumeid AS resumeid,
+            a.status AS status,
+            b.company_name AS company_name,
+            c.title as title
+        FROM jobapply a
+        LEFT JOIN company b ON a.comid = b.id
+        LEFT JOIN recruit c ON a.recruitid=c.id
+    </select>
+
+    <select id="selectOneJob" resultType="Jobapply" parameterType="Integer">
+        SELECT * FROM jobapply WHERE stuid=#{stuid} and recruitid=#{recruitid}
+    </select>
+
+    <insert id="addJobApply" parameterType="Jobapply">
+        INSERT into jobapply(stuid,recruitid,comid,resumeid,status) VALUES (#{stuid},#{recruitid},#{comid},#{resumeid},#{status})
+    </insert>
+
+</mapper>

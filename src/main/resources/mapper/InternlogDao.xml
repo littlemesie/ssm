@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mesie.dao.IInternlogDao">
+    <resultMap id="BaseResultMap" type="cn.mesie.model.Internlog">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="date" column="date" jdbcType="VARCHAR"/>
+        <result property="advisorappraise" column="advisorappraise" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <association property="company" javaType="cn.mesie.model.Company">
+            <result property="id" column="comid" jdbcType="INTEGER"/>
+            <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="student" javaType="cn.mesie.model.Student">
+            <result property="stuid" column="stuid" jdbcType="INTEGER"/>
+            <result property="stuname" column="stuname" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <insert id="addInternlog" parameterType="Internlog">
+        INSERT INTO internlog(stuid,date,comid,content,title)
+        VALUES (#{stuid},#{date},#{comid},#{content},#{title})
+    </insert>
+    <select id="selectAllInternlog" resultMap="BaseResultMap">
+        SELECT
+        a.id as id,
+        a.advisorappraise as advisorappraise,
+        a.date as date,
+        a.title as title,
+        b.company_name as company_name,
+        b.id as comid
+        FROM  internlog a
+        LEFT JOIN company b
+        ON a.comid = b.id
+    </select>
+
+    <update id="updateInterLog" parameterType="String">
+        UPDATE internlog set content=#{content},title=#{title} WHERE id=#{id}
+    </update>
+
+    <select id="selectInternlogById" resultType="Internlog" parameterType="Integer">
+        SELECT * from internlog WHERE id=#{id}
+    </select>
+
+
+</mapper>

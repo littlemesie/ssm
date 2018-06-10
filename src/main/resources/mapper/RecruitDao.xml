@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.mesie.dao.IRecruitDao">
+    <resultMap id="BaseResultMap" type="cn.mesie.model.Recruit">
+        <id column="recruit_id" property="id" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="publishdate" property="publishdate" jdbcType="VARCHAR"/>
+        <result column="workingcity" property="workingcity" jdbcType="VARCHAR"/>
+        <result column="salaryllimit" property="salaryllimit" jdbcType="VARCHAR"/>
+        <result column="jobcontent" property="jobcontent" jdbcType="VARCHAR"/>
+        <result column="recruitnum" property="recruitnum" jdbcType="INTEGER"/>
+        <result column="contactperson" property="contactperson" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <association property="company" javaType="cn.mesie.model.Company">
+            <result property="id" column="company_id" jdbcType="INTEGER"/>
+            <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+    <select id="selectRecruit" resultMap="BaseResultMap">
+        SELECT
+          a.id AS recruit_id,
+          a.company_id AS com_id,
+          a.title AS title,
+          a.publishdate AS publishdate,
+          b.id AS company_id,
+          b.company_name AS company_name
+        FROM recruit a
+          LEFT JOIN company b ON a.company_id = b.id
+        ORDER BY a.publishdate DESC LIMIT 3
+    </select>
+
+    <select id="selectAllRecruit" resultMap="BaseResultMap">
+        SELECT
+        a.id AS recruit_id,
+          a.company_id AS com_id,
+          a.type AS type,
+          a.title AS title,
+          a.publishdate AS publishdate,
+          a.workingcity AS workingcity,
+          a.salaryllimit AS salaryllimit,
+          a.jobcontent AS jobcontent,
+          a.recruitnum AS recruitnum,
+          a.contactperson AS contactperson,
+          a.email AS email,
+          a.phone AS phone,
+          b.id AS company_id,
+          b.company_name as company_name
+        FROM recruit a
+        LEFT JOIN company b ON a.company_id = b.id
+        ORDER BY a.publishdate DESC
+    </select>
+
+    <select id="selectRecruitById" resultMap="BaseResultMap" parameterType="INTEGER">
+        SELECT
+          a.id AS recruit_id,
+          a.company_id AS com_id,
+          a.type AS type,
+          a.title AS title,
+          a.publishdate AS publishdate,
+          a.workingcity AS workingcity,
+          a.salaryllimit AS salaryllimit,
+          a.jobcontent AS jobcontent,
+          a.recruitnum AS recruitnum,
+          a.contactperson AS contactperson,
+          a.email AS email,
+          a.phone AS phone,
+          b.id AS company_id,
+          b.company_name as company_name
+        FROM recruit a
+          LEFT JOIN company b ON a.company_id = b.id
+        WHERE a.id = #{id}
+    </select>
+</mapper>
